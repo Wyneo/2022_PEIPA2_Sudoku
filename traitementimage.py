@@ -28,8 +28,8 @@ def Contour(grille,img):
     ouverture= cv2.morphologyEx(thresh,cv2.MORPH_OPEN, kernel)
     contour,_=cv2.findContours(ouverture, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(grillecopy,contour,-1,(0,255,0),1)
-    plt.imshow(grillecopy)
-    plt.show()
+    #plt.imshow(grillecopy)
+    #plt.show()
     contour = list(contour)
     return contour
 
@@ -83,8 +83,8 @@ def Redresser(contourGrille,grille):
     return imgDroite
 
 imgDroite=Redresser(contourGrille,grille)
-#plt.imshow(imgDroite)
-#plt.show()
+plt.imshow(imgDroite)
+plt.show()
 
 
 
@@ -102,10 +102,19 @@ def SeparCase(grillecopy4,cases,coord):
     for i in range(0,899,100):
         for j in range(0,899,100):
             cases.append(grillecopy4[i:i+100,j:j+100])
-            plt.imshow(cases[k])
-            plt.show()
+            #plt.imshow(cases[k])
+            #plt.show()
             coord.append([[i,i+100],[j,j+100]])
             k+=1
-    return cases,coord
+    return cases
 
+cases2=SeparCase(grillecopy4,cases,coord)
 
+def RedimAndSave(img,x,y):
+    imgfinale=cv2.resize(img,(x,y), cv2.INTER_CUBIC)
+    #plt.imshow(imgfinale)
+    #plt.show()
+    plt.imsave('ImgFinale.jpeg',imgfinale)
+    return imgfinale
+
+imgfinale=RedimAndSave(grillecopy4,500,500)
