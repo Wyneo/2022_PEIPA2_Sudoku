@@ -20,27 +20,32 @@ def initGameGUI(P0, square_size, G) :
     return gridGUI
 
 # fonction qui dessine le jeu
-def drawGame(screen, gridGUI, grid_image, P0) :
+def drawGame(screen, gridGUI, grid_image, P0,template) :
     # Création d'une surface pour dessiner le jeu
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
     background = background.convert_alpha()
-    background.fill((250, 250, 250, 255))
+    background.fill(WHITE)
 
-    # Affichage du titre
-    font = pygame.font.Font(None, 36)
-    text = font.render("Sudoku", True, BLACK)
-    textpos = text.get_rect()
-    textpos.centerx = background.get_rect().centerx
-    textpos.y = 10
-    background.blit(text, textpos)
-
+    #Ajouter le template de fond
+    background.blit(template, (0,0))
     #Ajouter l'image de la grille
     background.blit(grid_image, P0)
     drawGrid(background, gridGUI)
-
+    #Ajout des boutons
+    PosBoutons=[(640,240),(770, 240),(900, 240),(1050, 240),(1180, 240)]
+    largeurBoutons=117
+    A1=pygame.image.load("Template/Boutons/A1.png")
+    A2=pygame.image.load("Template/Boutons/A2.png")
+    A3=pygame.image.load("Template/Boutons/A3.png")
+    I1=pygame.image.load("Template/Boutons/I1.png")
+    I2=pygame.image.load("Template/Boutons/I2.png")
+    background.blit(A1, PosBoutons[0])
+    background.blit(A2, PosBoutons[1])
+    background.blit(A3, PosBoutons[2])
+    background.blit(I1, PosBoutons[3])
+    background.blit(I2, PosBoutons[4])
     #"Blitter" dans la fenêtre
     screen.blit(background,(0,0))
-
 
 # fonction qui dessine la grille
 def drawGrid(background, gridGUI):
@@ -68,4 +73,3 @@ def drawCase(background, case):
         Dcase.blit(text, textpos)
     # on "blitte" la case dans le background
     background.blit(Dcase, (case["Position"][0], case["Position"][1]))
-

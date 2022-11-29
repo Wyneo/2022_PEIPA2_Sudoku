@@ -6,3 +6,6 @@ RED =   (255,0,0)
 GRAY = (200, 200, 200,255)
 BLACK = (0,0,0,255)
 DARK_GRAY = (100, 100, 100,255)
+
+#Couleurs Template
+clairTRANSPARENCE=(194,96,96,100)

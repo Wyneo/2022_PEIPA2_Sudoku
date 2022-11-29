@@ -16,7 +16,7 @@ def clicOnGrid(mousepos, gridGUI):
 
 # fonction qui active (/change la couleur) d'une case
 def highlight_case(coordinates, gridGUI):
-    gridGUI[coordinates]["Color_Case"]=BLUE
+    gridGUI[coordinates]["Color_Case"]=clairTRANSPARENCE
 
 
 # fonction qui désactive (/change la couleur) d'une case

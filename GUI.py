@@ -7,7 +7,7 @@ from events import *
 
 
 #-------------Initialisation des valeurs des grilles (à adapter)-------------
-G_init = [[5,0,0, 0,2,0, 8,0,9],
+"""G_init = [[5,0,0, 0,2,0, 8,0,9],
           [0,4,1, 8,0,0, 0,6,0],
           [0,0,2, 6,0,9, 3,0,0],
           [0,0,7, 5,0,8, 0,1,0],
@@ -16,7 +16,16 @@ G_init = [[5,0,0, 0,2,0, 8,0,9],
           [6,0,4, 0,1,0, 0,0,2],
           [0,1,0, 7,0,0, 0,5,4],
           [8,0,0, 0,6,2, 1,0,0]]
-
+"""
+G_init = [[0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0],
+          [0,0,0, 0,0,0, 0,0,0]]
 
 G_sol = [[5,6,3, 1,2,4, 8,7,9],
           [9,4,1, 8,3,7, 2,6,5],
@@ -40,22 +49,28 @@ def main():
     #Initialisation Pygame
     pygame.init()
     G_temp = G_init
-    window_H = 600
-    window_W = 600
+    window_H = 700
+    window_W = 1500
     #Importer image
-    grid_image = pygame.image.load("Grille1_taille1.png")
+    grid_image=pygame.image.load("Template/grilleVide2.png")
     case_size = int(grid_image.get_height()//9);
-    P0 = (50,50)
-
+    case_size = 57
+    P0 = (50,50)       #Marge écran-grille
+    #Importer le fond
+    template = pygame.image.load("Template/TemplateVide.png")
     #Séléction du mode de jeu (0->sans aide, 1->couleur verte pour chiffres corrects, 2->couleur rouge pour chiffres interdits à un emplacement
-    mode = 2;
+    mode = 0;
 
     #Création fenêtre de jeu et dessin du jeu
-    screen = pygame.display.set_mode((window_H, window_W))
+    screen = pygame.display.set_mode((window_W, window_H))
     gridGUI = initGameGUI(P0, case_size, G_temp)
-    drawGame(screen, gridGUI,grid_image, P0)
+    drawGame(screen, gridGUI,grid_image, P0,template)
     pygame.display.flip()
 
+    #À propos des boutons
+    posBoutons = [(640, 240), (770, 240), (900, 240), (1050, 240), (1180, 240)]
+    largeurBoutons = 117
+    hauteurBoutons = 114
 
     continuer = 1                                                                   #Continuer ou interrompre la boucle
 
@@ -80,8 +95,11 @@ def main():
                     current_highlighted = clicOnGrid(mousepos, gridGUI)             #Nouveau surlignage
                     if current_highlighted != None:
                          highlight_case(current_highlighted, gridGUI)
-                    drawGame(screen, gridGUI,grid_image, P0)
+                    drawGame(screen, gridGUI,grid_image, P0,template)
                     pygame.display.flip()
+                for i in posBoutons:
+                    if i[0]<=mousepos[0]<=(i[0]+largeurBoutons) and i[1]<=mousepos[1]<=(i[1]+largeurBoutons):
+                        print("Tu as cliqué !")
 
             #ENTREE CLAVIER + CASE SÉLECTIONNÉE
             if event.type == pygame.KEYDOWN and current_highlighted != None :
@@ -91,7 +109,7 @@ def main():
                 entree = event.key
                 if key_1<=entree<=key_9:
                     nombre = entree - 1073741912
-                    mode = 2
+                    mode = 0
                     locked_case = inputNumber(current_highlighted,nombre,gridGUI,G,G_sol,mode)  #Verrouillage de case + insertion nombre dans la grille
                     if not locked_case :
                         addValue(G, current_highlighted, nombre)
@@ -101,7 +119,7 @@ def main():
                     removeValue(G, current_highlighted)
                     locked_case = False
                 #MISE À JOUR ÉCRAN DE JEU
-                drawGame(screen, gridGUI, grid_image, P0)
+                drawGame(screen, gridGUI, grid_image, P0,template)
                 pygame.display.flip()
 
 
