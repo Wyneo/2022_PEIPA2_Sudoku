@@ -61,8 +61,8 @@ imax2 = ContourMax(contour)
 contourGrille = contour[imax2]
 grillecopy2 = grille.copy()
 cv2.drawContours(grillecopy2,contourGrille,-1,(0,255,0),1)
-plt.imshow(grillecopy2)
-plt.show()
+#plt.imshow(grillecopy2)
+#plt.show()
 
 '''
 Fonction VerifContour : vérifie que le contour selectionné est bien le contour de la grille
@@ -122,8 +122,8 @@ def Redresser(contourGrille,grille):
 
 imgDroite=Redresser(contourGrille,grille)
 #if imgDroite:
-plt.imshow(imgDroite)
-plt.show()
+#plt.imshow(imgDroite)
+#plt.show()
 
 '''
 Fonction SeparCase : Renvoie un tableau dont chaque élément est une case de la grille
@@ -144,7 +144,7 @@ def SeparCase(imgDroite):
             k+=1
     return cases,coord
 
-#cases = SeparCase(grillecopy4,cases,coord)
+cases,_ = SeparCase(imgDroite)
 
 '''
 Fonction RedimAndSave : Redimentionne l'image traitée pour utilisation dans le projet et l'enrgistre en tant que fichier jpeg
