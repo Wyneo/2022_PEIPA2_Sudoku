@@ -5,6 +5,7 @@ from pygame.locals import *
 from constantes import *
 from drawGame import *
 from utilsSudoku import *
+import time
 
 # fonction qui renvoit si elle existe la case de la grille sur laquelle l'utilisateur a cliqué
 def clicOnGrid(mousepos, gridGUI):
@@ -27,7 +28,7 @@ def unhighlight_case(coordinates, gridGUI):
 # fonction qui initie la valeur d'une case
 def inputNumber(coordinates, number, gridGUI, G, G_sol, mode):
     gridGUI[coordinates]['Value']=int(number)
-    locked_case = updateColorCase(coordinates, gridGUI, G, G_sol, mode)
+    locked_case = updateColorCase(coordinates, gridGUI, G, G_sol, mode,number)
     return (locked_case)
 
 # fonction qui initie la valeur d'une case à None
@@ -45,11 +46,11 @@ def removeValue(G,coordinates) :
 
 
 # fonction qui met à jour la couleur
-def updateColorCase(coordinates, gridGUI, G, G_sol, mode) :
+def updateColorCase(coordinates, gridGUI, G, G_sol, mode,number) :
     gridGUI[coordinates]['Color_Txt'] = BLACK
     #MODE DE JEU 1
     if (mode==1) :
-        if G[coordinates[0]][coordinates[1]]==G_sol[coordinates[0]][coordinates[1]]:
+        if number==G_sol[coordinates[0]][coordinates[1]]:
             gridGUI[coordinates]['Color_Txt'] = GREEN
     #MODE DE JEU 2
     if (mode==2) :
@@ -57,4 +58,19 @@ def updateColorCase(coordinates, gridGUI, G, G_sol, mode) :
             gridGUI[coordinates]['Color_Txt'] = RED
             return True
     return False
+
+
+
+def FonctionsBoutons(i,mode,screen):
+    nvmode=mode
+    BoutonEnfonce(i, screen)
+    pygame.display.flip()
+    if i == 0 :
+        nvmode = 0
+    elif i == 1:
+        nvmode = 1
+    elif i == 2:
+        nvmode = 2
+    return nvmode
+
 
