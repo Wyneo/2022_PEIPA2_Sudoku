@@ -15,7 +15,9 @@ def initGameGUI(P0, square_size, G) :
     gridGUI = {}
     for i in range(9) :
         for j in range(9) :
-            position = (P0[1]+j*square_size,P0[0]+i*square_size)
+            position = (P0[1] + j * square_size, P0[0] + i * square_size)
+            numcase = (position[0] // 57, position[1] // 57)
+            position = (position[0] - (0.5*numcase[0]), position[1] - (0.5*numcase[1]))
             if G[i][j] == 0 :
                 case = {'Value':None, 'Position': position, 'Size':square_size, 'Color_Txt': BLACK, 'Color_Case': TRANSPARENT,'Ver':0}
                 gridGUI[(i,j)] = case
@@ -84,6 +86,7 @@ def drawGame(screen, gridGUI, grid_image, P0,template,b,t, tb,TempsStart) :
 
     #"Blitter" dans la fenêtre
     screen.blit(background,(0,0))
+
     Affichetimer(timer(TempsStart), screen)
     drawGrid(background, gridGUI)
 
@@ -121,6 +124,7 @@ def drawCase(background, case):
         textpos.centery = Dcase.get_rect().centery
         Dcase.blit(text, textpos)
     # on "blitte" la case dans le background
+
     background.blit(Dcase, (case["Position"][0], case["Position"][1]))
 
 
@@ -147,7 +151,7 @@ def texteConsole(i,j):
         if j != None :
             textB = font.render(j, True, BLACK)
     elif i==4:
-        textA = font.render("Cet indice donne les différentes cases pour le nombre entré", True, BLACK)
+        textA = font.render("Cet indice donne les différentes cases pour le nombre entré dans une case", True, BLACK)
     elif i==5:
         textA = font.render("Voici la solution", True, BLACK)
     elif i=="V":

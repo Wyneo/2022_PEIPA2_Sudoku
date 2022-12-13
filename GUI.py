@@ -40,7 +40,7 @@ Sortie : -
 def main():
     #-------------------------------------Initialisation pygame---------------------------------------------------------
     pygame.init()
-    G_temp = G_init.copy()
+    G = G_init.copy()
     window_H = 700                                                                                                      #Taille fenêtre de jeu
     window_W = 1500
 
@@ -53,7 +53,7 @@ def main():
     P0 = (50,50)                                                                                                        #Marge écran-grille
 
     screen = pygame.display.set_mode((window_W, window_H))
-    gridGUI = initGameGUI(P0, case_size, G_temp)
+    gridGUI = initGameGUI(P0, case_size, G)
 
     #--------------------------------Initialisation de variables nécéssaires--------------------------------------------
     b = None
@@ -105,10 +105,10 @@ def main():
                 mousepos = pygame.mouse.get_pos()                                                                       #Récupérer position souris
                 #-----------------------------------Clic sur un bouton--------------------------------------------------
                 for i in range(len(posBoutons)):
-                    if posBoutons[i][0]<=mousepos[0]<=(posBoutons[i][0]+largeurBoutons) and posBoutons[i][1]<=mousepos[1]<=(posBoutons[i][1]+largeurBoutons):
+                    if posBoutons[i][0]<=mousepos[0]<=(posBoutons[i][0]+largeurBoutons) and posBoutons[i][1]<=mousepos[1]<=(posBoutons[i][1]+largeurBoutons) and not locked_case:
                         nbBouton=i
                         t=i
-                        mode,tb,gridGUI = FonctionsBoutons(nbBouton,mode,screen,current_highlighted,entree,G_temp,G_sol,gridGUI)
+                        mode,tb,gridGUI = FonctionsBoutons(nbBouton,mode,screen,current_highlighted,entree,G,G_sol,gridGUI)
                         drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb,TempsStart)
                         pygame.display.flip()
                 #-----------------------------------Clic sur une case --------------------------------------------------

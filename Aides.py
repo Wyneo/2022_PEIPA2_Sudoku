@@ -1,18 +1,10 @@
 import pygame
 from pygame.locals import *
 from constantes import *
+from utilsSudoku import *
 
 #INITIALISATION
 
-S=[[5,0,0,0,2,0,8,0,9],
-   [0,4,1,8,0,0,0,6,0],
-   [0,0,2,6,0,9,3,0,0],
-   [0,0,7,5,0,8,0,1,0],
-   [0,9,0,0,4,0,5,0,7],
-   [4,5,0,0,0,1,0,2,0],
-   [6,0,4,0,1,0,0,0,2],
-   [0,1,0,7,0,0,0,5,4],
-   [8,0,0,0,6,2,1,0,0]]
 #--------------------------------------------------
 """
 Fonction creation() : Créer le tableau P initial, avec toutes les possibilités pour un sudoku vide (ensembles de 1 à 9)
@@ -25,7 +17,6 @@ def creation():
         L=[]
         for j in range(9):
             L.append({1,2,3,4,5,6,7,8,9})
-        #print (L)
         P.append(L)
     return(P)
 
@@ -195,20 +186,27 @@ Entrées: grille de sudoku temporaire + chiffre clavier + grille + taille d'une 
 Sorties: Texte indiquant les cases possibles et les affichant en bleue 
 """
 
-def Aide2(G_temp,x,gridGUI):
+def Aide2(G,x,gridGUI,current_highlighted):
+
     if x != None :
-        P = remplacezero(G_temp, creation())
+        if 0<x-48<10: x = x-48
+        elif 0<x-1073741912<10: x = x-1073741912
+        G_copy = G.copy()
+        G_copy[current_highlighted[0]][current_highlighted[1]] = 0
+        P = remplacezero(G_copy, creation())
         for l in range(9):
             for c in range(9):
                 proche(P,l,c)
                 if (type(P[l][c]) == set):
-                    if (x-48) in P[l][c] or (x-1073741912) in P[l][c]:
-                        gridGUI[(l,c)]['Color_Case']=BLUE2
-                        print((x-48),"/",(x-1073741912), "est dans la case de colonne ",c," et de ligne ",l)
+                    if x in P[l][c]:
+                        gridGUI[(l,c)]['Color_Case']=MclairTRANSPARENCE
                     else:
                         gridGUI[(l,c)]['Color_Case']=TRANSPARENT
                 if (type(P[l][c]) == int):
-                    if (x - 48) == P[l][c] or (x-1073741912) == P[l][c]:
-                        gridGUI[(l,c)]['Color_Case']=BLUE2
+                    if x == P[l][c]:
+                        gridGUI[(l,c)]['Color_Case']=MclairTRANSPARENCE
                     else:
                         gridGUI[(l,c)]['Color_Case']=TRANSPARENT
+        if not is_authorized(x, current_highlighted, G_copy):
+            gridGUI[current_highlighted]['Color_Case']=TRANSPARENT
+
