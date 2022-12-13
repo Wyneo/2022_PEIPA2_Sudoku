@@ -24,6 +24,10 @@ def highlight_case(coordinates, gridGUI):
 def unhighlight_case(coordinates, gridGUI):
     gridGUI[coordinates]["Color_Case"] = TRANSPARENT
 
+def unhighlight_all(gridGUI):
+    for i in range(9):
+        for j in range(9):
+            unhighlight_case((i,j), gridGUI)
 
 # fonction qui initie la valeur d'une case
 def inputNumber(coordinates, number, gridGUI, G, G_sol, mode):
@@ -60,17 +64,25 @@ def updateColorCase(coordinates, gridGUI, G, G_sol, mode,number) :
     return False
 
 
-
-def FonctionsBoutons(i,mode,screen):
+def FonctionsBoutons(i,mode,screen,current_highlighted,entree,G_temp,G_sol,gridGUI):
+    unhighlight_all(gridGUI)
     nvmode=mode
-    BoutonEnfonce(i, screen)
+    BoutonEnfonce(i,screen)
     pygame.display.flip()
+    aide=None
     if i == 0 :
         nvmode = 0
     elif i == 1:
         nvmode = 1
     elif i == 2:
         nvmode = 2
-    return nvmode
+    elif i == 3:
+        aide=Aide1(G_temp, current_highlighted)
+    elif i == 4:
+        square_size=57
+        Aide2(G_temp, entree, gridGUI, square_size)
+    elif i == 5:
+        gridGUI = initGameGUI((50,50), 57, G_sol)
+    return nvmode,aide,gridGUI
 
 
