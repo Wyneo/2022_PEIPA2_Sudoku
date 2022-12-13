@@ -65,12 +65,11 @@ class Net(nn.Module):
         return F.log_softmax(x, dim=1)
 
 def centrage(im):
-    com = ndimage.measurements.center_of_mass(im)
-
+    com = ndimage.center_of_mass(im)
     # Translation distances in x and y axis
 
-    x_trans = int(im.shape[0]//2-com[0])
-    y_trans = int(im.shape[1]//2-com[1])
+    x_trans = int(im.shape[0]/2-com[0])
+    y_trans = int(im.shape[1]/2-com[1])
 
     # Pad and remove pixels from image to perform translation
 
@@ -113,21 +112,23 @@ resultat = []
 
 """ 
 Pour les 81 images du sudoku, récupéré grâce à traitementimage, 
-on fait un seuillage, on inverse les couleurs pour correspondre au set d'entrainement, 
-on fait un clear_border, et si l'image n'est pas toute noir, le model nous renvoie le chiffre dans la case du tableau résultat,
+on fait un seuillage, on inverse les couleurs pour correspondre aux images d'entrainement, 
+on fait un clear_border, et si l'image n'est pas toute noir, on centre et resize pour correspondre aux images d'entrainements
+puis le model nous renvoie le chiffre dans la case du tableau résultat,
 sinon le programme met un zéro dans la case.
 """
 
-for i in range (0,nb_images) :
+for i in range (0,nb_images):
     num = cases[i]
     num_seuil = seuillage(num)
     num_seuil=255-num_seuil
-    num_resize = clear_border(num_seuil)
+    num_resize = clear_border(num_seuil,6)
     #plt.imshow(num_resize, cmap=plt.cm.gray)
     #plt.show()
-    #num_resize = centrage(num_resize)
-    num_resize = cv2.resize(num_resize, (28, 28))
-    if np.count_nonzero(num_resize)>0:
+    print(np.count_nonzero(num_resize))
+    if np.count_nonzero(num_resize)>500:
+        num_resize = centrage(num_resize)
+        num_resize = cv2.resize(num_resize, (28, 28))
         num_tensor_transform = transform(num_resize)
         num_tensor_transform = torch.unsqueeze(num_tensor_transform, 0)
         #plt.imshow(num_tensor_transform[0, 0])
@@ -139,5 +140,15 @@ for i in range (0,nb_images) :
     else :
         resultat.append(0)
 
+"mise en forme des résultats sous la forme du tableau [[]*9] voulu pour la suite"
+T=[[0,]*9,]*9
+t=[]
+k=0
+for i in range(0,9):
+    for j in range(0,9):
+        t.append(resultat[k])
+        T[i] = t
+        k=k+1
+    t=[]
 
-print(resultat)
+print(T)
