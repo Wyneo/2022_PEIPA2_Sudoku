@@ -11,6 +11,7 @@ from scipy import ndimage
 from traitementimage import *
 
 
+
 class GlobalAveragePooling(nn.Module):
     def __init__(self, in_channels):
         self.s = in_channels
@@ -125,7 +126,6 @@ for i in range (0,nb_images):
     num_resize = clear_border(num_seuil,6)
     #plt.imshow(num_resize, cmap=plt.cm.gray)
     #plt.show()
-    print(np.count_nonzero(num_resize))
     if np.count_nonzero(num_resize)>500:
         num_resize = centrage(num_resize)
         num_resize = cv2.resize(num_resize, (28, 28))
@@ -151,4 +151,4 @@ for i in range(0,9):
         k=k+1
     t=[]
 
-print(T)
+#print(T)
