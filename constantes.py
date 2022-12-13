@@ -9,3 +9,5 @@ DARK_GRAY = (100, 100, 100,255)
 
 #Couleurs Template
 clairTRANSPARENCE=(50,98,174,100)
+FOND=(175,179,220)
+BLUE2 = (0,0, 255, 100)

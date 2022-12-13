@@ -5,6 +5,7 @@ from pygame.locals import *
 from drawGame import *
 from events import *
 import threading
+import time
 
 
 #-------------Initialisation des valeurs des grilles (à adapter)-------------
@@ -17,17 +18,7 @@ G_init = [[5,0,0, 0,2,0, 8,0,9],
           [6,0,4, 0,1,0, 0,0,2],
           [0,1,0, 7,0,0, 0,5,4],
           [8,0,0, 0,6,2, 1,0,0]]
-"""
-G_init = [[0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,1,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0],
-          [0,0,0, 0,0,0, 0,0,0]]
-"""
+
 G_sol = [[5,6,3, 1,2,4, 8,7,9],
           [9,4,1, 8,3,7, 2,6,5],
           [7,8,2, 6,5,9, 3,4,1],
@@ -46,85 +37,94 @@ Fonction main(): Fontion principale du programme
 Entrées : -
 Sortie : -
 """
-
 def main():
-    #Initialisation Pygame
+    #-------------------------------------Initialisation pygame---------------------------------------------------------
     pygame.init()
     G_temp = G_init.copy()
-    window_H = 700
+    window_H = 700                                                                                                      #Taille fenêtre de jeu
     window_W = 1500
-    #Importer image
-    grid_image=pygame.image.load("TemplateB/grilleVide2.png")
-    case_size = 57
-    P0 = (50,50)       #Marge écran-grille
-    #Importer le fond
-    template = pygame.image.load("TemplateB/TemplateTotale.png")
-    #Séléction du mode de jeu (0->sans aide, 1->couleur verte pour chiffres corrects, 2->couleur rouge pour chiffres interdits à un emplacement
-    mode = 0;
 
-    #Création fenêtre de jeu et dessin du jeu
+    #--------------------------------Importation des images de fond-----------------------------------------------------
+    grid_image=pygame.image.load("TemplateB/grilleVide2.png")
+    template = pygame.image.load("TemplateB/TemplateTotale.png")
+
+    #------------------------------Fenêtre de jeu + infos sur les cases-------------------------------------------------
+    case_size = 57                                                                                                      #Taille d'une case
+    P0 = (50,50)                                                                                                        #Marge écran-grille
+
     screen = pygame.display.set_mode((window_W, window_H))
-    thb = threading.Thread(target=timer,args=(screen,))
-    thb.start()
     gridGUI = initGameGUI(P0, case_size, G_temp)
+
+    #--------------------------------Initialisation de variables nécéssaires--------------------------------------------
     b = None
     t = None
-    drawGame(screen, gridGUI,grid_image, P0,template,b,t)
+    tb = None
+    mode = 0;                                                                                                           #Mode de jeu à 0 par défaut (mode normal)
+    TempsStart = 86400 * time.localtime()[2] + 3600 * time.localtime()[3] + 60 * time.localtime()[4] + time.localtime()[5] #Heure en secondes du moment de lancement du sudoku
+    current_highlighted = None                                                                                          #Représente, si elle existe, une case sélectionnée sur l'interface graphique
+    locked_case = False                                                                                                 #Variable permettant de verrouiller une case
+    entree = None
+    continuer = 1                                                                                                       # Continuer ou interrompre la boucle
+
+    #--------------------------------------------Dessin du jeu----------------------------------------------------------
+    drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb, TempsStart)
     pygame.display.flip()
 
-    #À propos des boutons
-    posBoutons = [(640, 240), (770, 240), (900, 240), (1050, 240), (1180, 240)]
+
+    #----------------------------------------Infos sur les boutons------------------------------------------------------
+    posBoutons=[(640,240),(770, 240),(900, 240),(1050, 240),(1180, 240),(1310, 240)]
     largeurBoutons = 117
     hauteurBoutons = 114
 
-    continuer = 1                                                                   #Continuer ou interrompre la boucle
+    #-------Lancement d'un thread en parallèle du main, rafraichissement de l'écran de jeu------------------------------
+    thb = threading.Thread(target=RefreshTimer, args=(screen,TempsStart,))
+    thb.start()
 
-    #BOUCLE
-    current_highlighted = None                                                      #Représente, si elle existe, une case sélectionnée sur l'interface graphique
-    locked_case = False                                                             #Variable permettabt de verrouiller une case
-
-
+    #----------------------------------------Début de la boucle de jeu--------------------------------------------------
     while continuer:
-        #Évènements recus de l'utilisateur
+        #----------------------------------------On reçoit un évènement-------------------------------------------------
         for event in pygame.event.get():
-            #QUITTER LA BOUCLE
+            #-------------------------------------Quitter la boucle-----------------------------------------------------
             if event.type == QUIT:
                 continuer = 0
 
+            # -------------------------------------Survol d'un bouton---------------------------------------------------
             if event.type == pygame.MOUSEMOTION:
                 mousepos = pygame.mouse.get_pos()
                 b=None
                 for i in range(len(posBoutons)):
                     if posBoutons[i][0]<=mousepos[0]<=(posBoutons[i][0]+largeurBoutons) and posBoutons[i][1]<=mousepos[1]<=(posBoutons[i][1]+largeurBoutons):
                         b=i
-                        drawGame(screen, gridGUI, grid_image, P0, template, b,t)
+                        drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb, TempsStart)
                         pygame.display.flip()
 
 
-            #CLIC SOURIS
+            #-----------------------------------------Clic souris-------------------------------------------------------
             if event.type == pygame.MOUSEBUTTONDOWN:
                 nbBouton = None
-                mousepos = pygame.mouse.get_pos()                                   #Récupérer position souris
+                mousepos = pygame.mouse.get_pos()                                                                       #Récupérer position souris
+                #-----------------------------------Clic sur un bouton--------------------------------------------------
                 for i in range(len(posBoutons)):
                     if posBoutons[i][0]<=mousepos[0]<=(posBoutons[i][0]+largeurBoutons) and posBoutons[i][1]<=mousepos[1]<=(posBoutons[i][1]+largeurBoutons):
                         nbBouton=i
                         t=i
-                        mode = FonctionsBoutons(nbBouton,mode,screen)
-                        drawGame(screen, gridGUI, grid_image, P0, template, b, t)
+                        mode,tb,gridGUI = FonctionsBoutons(nbBouton,mode,screen,current_highlighted,entree,G_temp,G_sol,gridGUI)
+                        drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb,TempsStart)
                         pygame.display.flip()
+                #-----------------------------------Clic sur une case --------------------------------------------------
                 if (not locked_case and 50<mousepos[0]<550 and 50<mousepos[1]<550 and nbBouton==None and gridGUI[clicOnGrid(mousepos, gridGUI)]['Ver']==0 ) :                                              #Case non verrouillée
                     if current_highlighted != None:                                 #Retirer surlignage
                         unhighlight_case(current_highlighted,gridGUI)
                     current_highlighted = clicOnGrid(mousepos, gridGUI)             #Nouveau surlignage
                     if current_highlighted != None:
                          highlight_case(current_highlighted, gridGUI)
-                    drawGame(screen, gridGUI,grid_image, P0,template,b,t)
+                    drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb, TempsStart)
                     pygame.display.flip()
 
-
-            #ENTREE CLAVIER + CASE SÉLECTIONNÉE
+            #----------------------------Entrée clavier + case sélectionnée---------------------------------------------
             if event.type == pygame.KEYDOWN and current_highlighted != None :
-                #CHIFFRES
+
+                #-------------------------Chiffres (pavé num & clavier)-------------------------------------------------
                 key_1=1073741913
                 key_9=1073741921
                 cle_1=49
@@ -141,44 +141,36 @@ def main():
                     if not locked_case:
                         addValue(G, current_highlighted, nombre)
 
-                #SUPPRESSION
+                #----------------------------------------Suppression----------------------------------------------------
                 if entree==8:
                     eraseNumber(current_highlighted, gridGUI)
                     removeValue(G, current_highlighted)
                     locked_case = False
-                #MISE À JOUR ÉCRAN DE JEU
+
+                #-----------------------------------Mise à jour de l'écran----------------------------------------------
                 b = None
-                drawGame(screen, gridGUI, grid_image, P0,template,b,t)
+                if G == G_sol:
+                    t="V"
+                drawGame(screen, gridGUI, grid_image, P0,template,b,t,tb,TempsStart)
                 pygame.display.flip()
 
-
-
-def timer(screen):
-    num_of_secs=0
-
-    console = pygame.Surface((800, 200), pygame.SRCALPHA, 32)
-    console = console.convert_alpha()
-    console.fill(RED)
-    font = pygame.font.Font(None, 40)
-    text = font.render("Ce mode de jeu n'apporte pas d'aide au joueur", True, BLACK)
-    console.blit(text, (0, 0))
-    screen.blit(console, (0, 0))
-    pygame.display.flip()
-
+#-----------------------------------------------------------------------------------------------------------------------
+"""
+Fonction RefreshTimer(screen,TempsStart): Réaffiche le timer toutes les [dt] secondes
+Entrées : TempsStart (heure de début du sudoku en secondes), screen (écran de jeu)
+Sortie : Affichage graphique
+"""
+def RefreshTimer(screen,TempsStart):
     while tha.is_alive():
-        m,s = divmod(num_of_secs, 60)
-        min_sec_format = '{:02d}:{:02d}'.format(m, s)
-        print(min_sec_format, end='\n')
-        time.sleep(1)
-        num_of_secs += 1
+        dt=0.05
+        time.sleep(dt)
+        Affichetimer(timer(TempsStart),screen)
+        pygame.display.flip()
 
-
-
+#-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     tha = threading.Thread(target=main)
 
     tha.start()
-
-
     tha.join()
 
