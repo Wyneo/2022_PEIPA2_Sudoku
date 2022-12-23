@@ -91,64 +91,62 @@ def centrage(im):
 
     return im3
 
-transform=transforms.Compose([
-    transforms.ToTensor(), # on met les images en tensor
-    transforms.Normalize((0.1307,), (0.3081,)), # on normalise comme les images d'entrainement
-    lambda x: x>0, #on binarise
-    lambda x: x.float(),
-])
+def fonction():
+    transform=transforms.Compose([
+        transforms.ToTensor(), # on met les images en tensor
+        transforms.Normalize((0.1307,), (0.3081,)), # on normalise comme les images d'entrainement
+        lambda x: x>0, #on binarise
+        lambda x: x.float(),
+    ])
 
-#Chargement du model entrainé 2 fois
-path_modele = "./model/model_bis.ckpt"
-device = torch.device("cpu")
-model = Net().to(device)
-model.load_state_dict(torch.load(path_modele))
-model.to(device)
-model.eval()
+    #Chargement du model entrainé 2 fois
+    path_modele = "./model/model_bis.ckpt"
+    device = torch.device("cpu")
+    model = Net().to(device)
+    model.load_state_dict(torch.load(path_modele))
+    model.to(device)
+    model.eval()
 
-nb_images = 81
-prediction = []
-correct = 0
-resultat = []
+    nb_images = 81
+    prediction = []
+    correct = 0
+    resultat = []
 
-""" 
-Pour les 81 images du sudoku, récupéré grâce à traitementimage, 
-on fait un seuillage, on inverse les couleurs pour correspondre aux images d'entrainement, 
-on fait un clear_border, et si l'image n'est pas toute noir, on centre et resize pour correspondre aux images d'entrainements
-puis le model nous renvoie le chiffre dans la case du tableau résultat,
-sinon le programme met un zéro dans la case.
-"""
+    """ 
+    Pour les 81 images du sudoku, récupéré grâce à traitementimage, 
+    on fait un seuillage, on inverse les couleurs pour correspondre aux images d'entrainement, 
+    on fait un clear_border, et si l'image n'est pas toute noir, on centre et resize pour correspondre aux images d'entrainements
+    puis le model nous renvoie le chiffre dans la case du tableau résultat,
+    sinon le programme met un zéro dans la case.
+    """
 
-for i in range (0,nb_images):
-    num = cases[i]
-    num_seuil = seuillage(num)
-    num_seuil=255-num_seuil
-    num_resize = clear_border(num_seuil,6)
-    #plt.imshow(num_resize, cmap=plt.cm.gray)
-    #plt.show()
-    if np.count_nonzero(num_resize)>500:
-        num_resize = centrage(num_resize)
-        num_resize = cv2.resize(num_resize, (28, 28))
-        num_tensor_transform = transform(num_resize)
-        num_tensor_transform = torch.unsqueeze(num_tensor_transform, 0)
-        #plt.imshow(num_tensor_transform[0, 0])
-        #plt.show()
-        model.float()
-        output = model(num_tensor_transform.to(device))
-        pred = output.argmax(dim=1, keepdim=True)
-        resultat.append(pred.item())
-    else :
-        resultat.append(0)
+    for i in range (0,nb_images):
+        num = cases[i]
+        num_seuil = seuillage(num)
+        num_seuil=255-num_seuil
+        num_resize = clear_border(num_seuil,6)
+        if np.count_nonzero(num_resize)>500:
+            num_resize = centrage(num_resize)
+            num_resize = cv2.resize(num_resize, (28, 28))
+            num_tensor_transform = transform(num_resize)
+            num_tensor_transform = torch.unsqueeze(num_tensor_transform, 0)
+            model.float()
+            output = model(num_tensor_transform.to(device))
+            pred = output.argmax(dim=1, keepdim=True)
+            resultat.append(pred.item())
+        else :
+            resultat.append(0)
 
-"mise en forme des résultats sous la forme du tableau [[]*9] voulu pour la suite"
-T=[[0,]*9,]*9
-t=[]
-k=0
-for i in range(0,9):
-    for j in range(0,9):
-        t.append(resultat[k])
-        T[i] = t
-        k=k+1
+    "mise en forme des résultats sous la forme du tableau [[]*9] voulu pour la suite"
+    T=[[0,]*9,]*9
     t=[]
+    k=0
+    for i in range(0,9):
+        for j in range(0,9):
+            t.append(resultat[k])
+            T[i] = t
+            k=k+1
+        t=[]
+    return T
 
-#print(T)
+

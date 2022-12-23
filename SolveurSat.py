@@ -2,17 +2,6 @@ import pysat
 from pysat.formula import CNF
 from pysat.solvers import Solver
 
-G_init =[[5,0,0, 0,2,0, 8,0,9],
-        [0,4,1, 8,0,0, 0,6,0],
-        [0,0,2, 6,0,9, 3,0,0],
-
-        [0,0,7, 5,0,8, 0,1,0],
-        [0,9,0, 0,4,0, 5,0,7],
-        [4,5,0, 0,0,1, 0,2,0],
-
-        [6,0,4, 0,1,0, 0,0,2],
-        [0,1,0, 7,0,0, 0,5,4],
-        [8,0,0, 0,6,2, 1,0,0]]
 
 '''Fonction SolveurSAT : prend en compte une grille de Sudoku non résolue et la résoud à l'aide de SAT
     Entrée : tableau de tableaux représentant une grille de Sudoku non résolue
@@ -95,7 +84,9 @@ def SolveurSat(G_init):
         #print('formula is', f'{"s" if solver.solve() else "uns"}atisfiable')
         if solver.solve():
             sol = solver.get_model()
-
+        else :
+            print("Aucune solution n'a été trouvée")
+            return None
     soluce = []
     for i in sol:
         if i >= 0:
@@ -107,4 +98,3 @@ def SolveurSat(G_init):
 
     return (G_final)
 
-print(SolveurSat(G_init))

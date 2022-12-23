@@ -3,6 +3,8 @@
 import pygame
 from pygame.locals import *
 from drawGame import *
+from Recochiffre import *
+from SolveurSat import *
 from events import *
 from Images import *
 import threading
@@ -11,25 +13,12 @@ import os
 
 
 #-------------Initialisation des valeurs des grilles (à adapter)-------------
-G_init = [[5,0,0, 0,2,0, 8,0,9],
-          [0,4,1, 8,0,0, 0,6,0],
-          [0,0,2, 6,0,9, 3,0,0],
-          [0,0,7, 5,0,8, 0,1,0],
-          [0,9,0, 0,4,0, 5,0,7],
-          [4,5,0, 0,0,1, 0,2,0],
-          [6,0,4, 0,1,0, 0,0,2],
-          [0,1,0, 7,0,0, 0,5,4],
-          [8,0,0, 0,6,2, 1,0,0]]
 
-G_sol = [[5,6,3, 1,2,4, 8,7,9],
-          [9,4,1, 8,3,7, 2,6,5],
-          [7,8,2, 6,5,9, 3,4,1],
-          [3,2,7, 5,9,8, 4,1,6],
-          [1,9,8, 2,4,6, 5,3,7],
-          [4,5,6, 3,7,1, 9,2,8],
-          [6,3,4, 9,1,5, 7,8,2],
-          [2,1,9, 7,8,3, 6,5,4],
-          [8,7,5, 4,6,2, 1,9,3]]
+G_init = fonction()
+for i in range (len(G_init)):
+    print(G_init[i])
+
+G_sol = SolveurSat(G_init)
 
 G=G_init.copy()
 

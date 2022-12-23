@@ -67,7 +67,7 @@ def updateColorCase(coordinates, gridGUI, G, G_sol, mode,number) :
 def FonctionsBoutons(i,mode,screen,current_highlighted,entree,G,G_sol,gridGUI,WC):
     unhighlight_all(gridGUI)
     nvmode=mode
-    BoutonEnfonce(i,screen)
+    BoutonEnfonce(i,screen,WC)
     pygame.display.flip()
     aide=None
     if i == 0 :
@@ -81,7 +81,7 @@ def FonctionsBoutons(i,mode,screen,current_highlighted,entree,G,G_sol,gridGUI,WC
     elif i == 4:
         Aide2(G, entree, gridGUI,current_highlighted)
     elif i == 5:
-        gridGUI = initGameGUI((50*WC,50*WC), 57*WC, G_sol)
+        gridGUI = initGameGUI((50*WC,50*WC), 57*WC, G_sol,WC)
     return nvmode,aide,gridGUI
 
 

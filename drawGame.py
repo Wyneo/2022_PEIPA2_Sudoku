@@ -157,10 +157,8 @@ Fonction BoutonEnfonce(i,screen): On importe la bonne image et on l'affiche à l
 Entrées : i (numéro du bouton), screen (écran de jeu)
 Sortie : Affichage graphique
 """
-def BoutonEnfonce(i,screen):
-    PosBoutons = [(640 * WC, 240 * WC), (770 * WC, 240 * WC), (900 * WC, 240 * WC), (1050 * WC, 240 * WC),
-                  (1180 * WC, 240 * WC), (1310 * WC, 240 * WC)]
-
+def BoutonEnfonce(i,screen,WC):
+    PosBoutons = [(640*WC,240*WC),(770*WC, 240*WC),(900*WC, 240*WC),(1050*WC, 240*WC),(1180*WC, 240*WC),(1310*WC, 240*WC)]
     adresse = "TemplateB/Boutons/DB" + str(i) + ".png"
     img = pygame.image.load(adresse)
     img = pygame.transform.scale(img, (117 * WC, 114 * WC))

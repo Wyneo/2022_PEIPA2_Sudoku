@@ -1,8 +1,17 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
+import tkinter
+from tkinter import filedialog
 
-grille = cv2.imread('grille1.png')
+filename = "initialisationdelavariable"
+
+while filename[-3]+filename[-2]+filename[-1] != 'jpg' and filename[-3]+filename[-2]+filename[-1] != 'png':
+    filename = filedialog.askopenfilename(initialdir="/",
+                                              title="Veuillez sélectionner une image (formats supportés : png, jpg)",
+                                              filetypes=(("Fichiers","*.*"),))
+
+grille = cv2.imread(filename)
 
 '''
 Fonction Seuillage : prend en compte une photo de grille en couleur, la transforme en nuance de gris.
@@ -16,7 +25,7 @@ def seuillage(grille):
     #plt.imshow(img)
     #plt.show()
     return img
-
+seuillage(grille)
 """
 Contour(grille,img) : Récupère tous les contours présents sur l'image
 Entrées : grille (image originale de la grille), img (grille en noir et blanc)
