@@ -137,16 +137,20 @@ def fonction():
         else :
             resultat.append(0)
 
-    "mise en forme des résultats sous la forme du tableau [[]*9] voulu pour la suite"
+    #mise en forme des résultats sous la forme du tableau [[]*9] voulu pour la suite
     T=[[0,]*9,]*9
     t=[]
     k=0
-    for i in range(0,9):
-        for j in range(0,9):
+    nbzero = 0
+    for i in range(0, 9):
+        for j in range(0, 9):
             t.append(resultat[k])
             T[i] = t
-            k=k+1
-        t=[]
-    return T
-
-
+            k = k + 1
+            if T[i][j] == 0:
+                nbzero += 1
+        t = []
+    if nbzero > 64: #Une grille avec 17 entrée peut être résolue
+        print("L'IA n'arrive pas à reconnaitre les chiffres pour cette grille, veuillez essayer avec une autre grille.")
+    else:
+        return T
