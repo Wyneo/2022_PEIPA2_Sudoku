@@ -11,17 +11,6 @@ import threading
 import time
 import os
 
-
-#-------------Initialisation des valeurs des grilles (à adapter)-------------
-
-G_init = fonction()
-for i in range (len(G_init)):
-    print(G_init[i])
-
-G_sol = SolveurSat(G_init)
-
-G=G_init.copy()
-
 ##------------------------Début des fonctions--------------------------------
 """
 Fonction main(): Fontion principale du programme
@@ -164,10 +153,29 @@ def RefreshTimer(screen,TempsStart,WC):
         Affichetimer(timer(TempsStart),screen,WC)
         pygame.display.flip()
 
-#-----------------------------------------------------------------------------------------------------------------------
-if __name__ == "__main__":
-    tha = threading.Thread(target=main)
+#-------------Initialisation des valeurs des grilles (à adapter)-------------
 
-    tha.start()
-    tha.join()
+G_init = fonction()
+
+if (SolveurSat(G_init) != None) :
+    for i in range(len(G_init)):
+        print(G_init[i])
+    G = G_init.copy()
+
+    G_sol = SolveurSat(G_init)
+
+    if __name__ == "__main__":
+        tha = threading.Thread(target=main)
+
+        tha.start()
+        tha.join()
+else:
+    img = cv2.imread ("TemplateB/messageerreur/erreursolution.png")
+    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+    cv2.imshow('image', img)
+    cv2.waitKey(20000)
+    cv2.destroyAllWindows()
+
+
+
 
