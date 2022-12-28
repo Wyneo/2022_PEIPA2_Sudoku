@@ -22,8 +22,6 @@ def seuillage(grille):
     grillegrise = cv2.cvtColor(grille, cv2.COLOR_RGB2GRAY)
     th = grillegrise.copy()
     img = cv2.adaptiveThreshold(th, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 71, 17)
-    #plt.imshow(img)
-    #plt.show()
     return img
 seuillage(grille)
 """
@@ -39,8 +37,6 @@ def Contour(grille,img):
     ouverture= cv2.morphologyEx(thresh,cv2.MORPH_OPEN, kernel)
     contour,_=cv2.findContours(ouverture, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(grillecopy,contour,-1,(0,255,0),1)
-    #plt.imshow(grillecopy)
-    #plt.show()
     contour = list(contour)
     return contour
 
@@ -70,8 +66,7 @@ imax2 = ContourMax(contour)
 contourGrille = contour[imax2]
 grillecopy2 = grille.copy()
 cv2.drawContours(grillecopy2,contourGrille,-1,(0,255,0),1)
-#plt.imshow(grillecopy2)
-#plt.show()
+
 
 '''
 Fonction VerifContour : vérifie que le contour selectionné est bien le contour de la grille
@@ -90,14 +85,13 @@ Entrée : contourGrille (grand contour de la grille -> le carré)
 Sortie : simplc (tableau avec les coordonnées des points correspondant aux 4 coins de la grille)
 """
 def SimplContour(contourGrille):
-    #if VerifContour :
+
     peri=cv2.arcLength(contourGrille,True)
     simplc=cv2.approxPolyDP(contourGrille,0.1*peri,True)
     cv2.drawContours(grillecopy2,simplc,-1,(0,255,0),1)
-    #plt.imshow(grillecopy2)
-    #plt.show()
+
     return simplc
-    'else : return False'
+
 
 """
 orderContourPoints(contour): Crée un contour à partir des coordonnées des 4 coins de la grille
@@ -105,8 +99,11 @@ Entrée : contour (grand contour de la grille -> le carré)
 Sortie : new_contour (contour créé à partir des coordonnées des 4 coins de la grille)
 """
 def orderContourPoints(contour):
-    new_contour=[contour[0],contour[3],contour[2],contour[1]]
-    return new_contour
+    if len(contour)==4 :
+        new_contour=[contour[0],contour[3],contour[2],contour[1]]
+        return new_contour
+    else :
+        return None
 
 """
 Redresser(contourGrille,grille) : Application des deux fonctions précédentes afin de récupérer une image droite
@@ -115,8 +112,11 @@ Sortie : imgDroite (grilledroite, sans les éléments autour)
 """
 def Redresser(contourGrille,grille):
     simplc=SimplContour(contourGrille)
-    #if simplc:
     simplc=orderContourPoints(simplc)
+
+    if simplc == None :
+        return [[[None]]]
+
     M1=np.zeros([900,900])
     pts1=np.float32(simplc)
     pts2=np.float32([[900,0],[0,0],[0,900],[900,900]])
@@ -125,14 +125,9 @@ def Redresser(contourGrille,grille):
     rows,cols=M1.shape
     imgDroite=cv2.warpPerspective(grillecopy3,M2,(cols,rows))
     return imgDroite
-    '''else :
-        print("Image peu claire")
-        return False'''
+
 
 imgDroite=Redresser(contourGrille,grille)
-#if imgDroite:
-#plt.imshow(imgDroite)
-#plt.show()
 
 '''
 Fonction SeparCase : Renvoie un tableau dont chaque élément est une case de la grille
@@ -140,6 +135,10 @@ Entrée : imgDroite (grilledroite, sans les éléments autour)
 Sorties : cases : tableau comprenant chaque case de la grille, coord : tableau de coordonnées de chaque case
 '''
 def SeparCase(imgDroite):
+
+    if imgDroite[0][0][0] == None :
+        return None,None
+
     grillecopy4 = imgDroite.copy()
     k=0
     cases = []
@@ -147,8 +146,6 @@ def SeparCase(imgDroite):
     for i in range(0,899,100):
         for j in range(0,899,100):
             cases.append(grillecopy4[i:i+100,j:j+100])
-            #plt.imshow(cases[k])
-            #plt.show()
             coord.append([[i,i+100],[j,j+100]])
             k+=1
     return cases,coord
@@ -157,13 +154,11 @@ cases,_ = SeparCase(imgDroite)
 
 '''
 Fonction RedimAndSave : Redimentionne l'image traitée pour utilisation dans le projet et l'enrgistre en tant que fichier jpeg
-Entrée : img (l'image à redmiensionner), x et y (dimensions de l'image finale souhaitée)
+Entrée : img (l'image à redimensionner), x et y (dimensions de l'image finale souhaitée)
 Sortie : imgfinale (l'image redimensionnée)
 '''
 def RedimAndSave(img,x,y):
     imgfinale=cv2.resize(img,(x,y), cv2.INTER_CUBIC)
-    #plt.imshow(imgfinale)
-    #plt.show()
     plt.imsave('ImgFinale.jpeg',imgfinale)
     return imgfinale
 

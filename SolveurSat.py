@@ -64,7 +64,6 @@ def SolveurSat(G_init):
         if solver.solve():
             sol = solver.get_model()
         else :
-            print("Aucune solution n'a été trouvée")
             return None
     soluce = []
     for i in sol:

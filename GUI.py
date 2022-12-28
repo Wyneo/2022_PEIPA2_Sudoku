@@ -97,7 +97,7 @@ def main():
                         drawGame(screen, gridGUI, grid_image, P0, template, b, t, tb,TempsStart,WC)
                         pygame.display.flip()
                 #-----------------------------------Clic sur une case --------------------------------------------------
-                if (not locked_case and 50*WC<mousepos[0]<550*WC and 50*WC<mousepos[1]<550*WC and nbBouton==None and gridGUI[clicOnGrid(mousepos, gridGUI)]['Ver']==0 ) :                                              #Case non verrouillée
+                if (not locked_case and 50*WC<mousepos[0]<550*WC and 50*WC<mousepos[1]<550*WC and nbBouton==None and gridGUI[clicOnGrid(mousepos, gridGUI)]['Ver']==0 ) :          #Case non verrouillée
                     if current_highlighted != None:                                 #Retirer surlignage
                         unhighlight_case(current_highlighted,gridGUI)
                     current_highlighted = clicOnGrid(mousepos, gridGUI)             #Nouveau surlignage
@@ -173,7 +173,7 @@ else:
     img = cv2.imread ("TemplateB/messageerreur/erreursolution.png")
     cv2.namedWindow('erreur', cv2.WINDOW_NORMAL)
     cv2.imshow('erreur', img)
-    cv2.waitKey(20000)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 

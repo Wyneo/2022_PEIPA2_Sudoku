@@ -92,6 +92,8 @@ def centrage(im):
     return im3
 
 def fonction():
+    if cases == None :
+        return None
     transform=transforms.Compose([
         transforms.ToTensor(), # on met les images en tensor
         transforms.Normalize((0.1307,), (0.3081,)), # on normalise comme les images d'entrainement
