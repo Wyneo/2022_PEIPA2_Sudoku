@@ -152,5 +152,6 @@ def fonction():
         t = []
     if nbzero > 64: #Une grille avec 17 entrée peut être résolue
         print("L'IA n'arrive pas à reconnaitre les chiffres pour cette grille, veuillez essayer avec une autre grille.")
+        return None
     else:
         return T
