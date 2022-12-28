@@ -157,7 +157,7 @@ def RefreshTimer(screen,TempsStart,WC):
 
 G_init = fonction()
 
-if (SolveurSat(G_init) != None) :
+if G_init != None and (SolveurSat(G_init) != None) :
     for i in range(len(G_init)):
         print(G_init[i])
     G = G_init.copy()
@@ -171,8 +171,8 @@ if (SolveurSat(G_init) != None) :
         tha.join()
 else:
     img = cv2.imread ("TemplateB/messageerreur/erreursolution.png")
-    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-    cv2.imshow('image', img)
+    cv2.namedWindow('erreur', cv2.WINDOW_NORMAL)
+    cv2.imshow('erreur', img)
     cv2.waitKey(20000)
     cv2.destroyAllWindows()
 
