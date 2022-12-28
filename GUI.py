@@ -173,7 +173,7 @@ else:
     img = cv2.imread ("TemplateB/messageerreur/erreursolution.png")
     cv2.namedWindow('erreur', cv2.WINDOW_NORMAL)
     cv2.imshow('erreur', img)
-    cv2.waitKey(20000)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
