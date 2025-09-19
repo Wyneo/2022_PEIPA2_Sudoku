@@ -33,7 +33,7 @@ def SolveurSat(G_init):
             k = G_init[i][j]
             CaseI = i // 3 * 3
             CaseJ = j // 3 * 3
-            if k != 0:
+            if k != 0 :
                 CNFA.append((PvS[(i, j, k)]["Clé"], PvS[(i, j, k)]["Clé"]))
                 for m in range(9):
                     if m != i:
@@ -60,6 +60,7 @@ def SolveurSat(G_init):
 
     #-------------------------------------------------Résolution par SAT------------------------------------------------
     cnf = CNF(from_clauses=CNFA)
+    print(cnf)
     with Solver(bootstrap_with=cnf) as solver:
         if solver.solve():
             sol = solver.get_model()

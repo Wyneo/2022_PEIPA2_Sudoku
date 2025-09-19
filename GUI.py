@@ -158,8 +158,6 @@ def RefreshTimer(screen,TempsStart,WC):
 G_init = fonction()
 
 if G_init != None and (SolveurSat(G_init) != None) :
-    for i in range(len(G_init)):
-        print(G_init[i])
     G = G_init.copy()
 
     G_sol = SolveurSat(G_init)
